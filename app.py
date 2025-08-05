@@ -15,7 +15,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Fix theme and visibility issues
 st.markdown("""
 <style>
 /* Overall background fix */

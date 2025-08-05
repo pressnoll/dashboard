@@ -24,9 +24,24 @@ A professional Streamlit dashboard for staff attendance and punctuality analytic
    - For Streamlit Cloud: add credentials to Streamlit secrets (`.streamlit/secrets.toml`)
 
 ## Deployment (Streamlit Cloud)
-- Push to GitHub
-- On Streamlit Cloud, set up secrets for Firebase
+
+### Quick Setup:
+1. **Push to GitHub** ✅ (Already completed)
+2. **Deploy on Streamlit Cloud:**
+   - Go to [share.streamlit.io](https://share.streamlit.io)
+   - Connect your GitHub account
+   - Select `ToksNet/NFC_Dashboard` repository
+   - Set main file as `app.py`
+3. **Configure Firebase Secrets:**
+   - In Streamlit Cloud app settings → Secrets tab
+   - Add your Firebase service account credentials
+   - See `DEPLOYMENT_GUIDE.md` for detailed steps
+4. **Reboot app** after adding secrets
+
+### Important:
 - App will run from `app.py`
+- Firebase credentials must be added to Streamlit Cloud secrets
+- Never commit `serviceAccountKey.json` to GitHub
 
 ## Security
 - Passwords are hashed before storing in Firestore
