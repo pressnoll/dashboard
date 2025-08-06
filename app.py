@@ -199,9 +199,9 @@ def login_page():
         username = st.text_input("Username", key="login_username")
         password = st.text_input("Password", type="password", key="login_password")
         if st.button("Login"):
-            if username and password:
-                # Firebase authentication
-                user_role = check_user_credentials(db, username, password)                if user_role:
+            if username and password:                # Firebase authentication
+                user_role = check_user_credentials(db, username, password)
+                if user_role:
                     st.session_state.authenticated = True
                     st.session_state.username = username
                     st.session_state.user_role = user_role
@@ -583,7 +583,8 @@ def staff_management():
                         st.error(f"Error adding staff: {str(e)}")
                 else:
                     st.error("Name is required")
-      with tab3:
+    
+    with tab3:
         st.subheader("Remove Staff")
         staff_list = get_staff_list(db)
         if staff_list:
