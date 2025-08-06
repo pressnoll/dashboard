@@ -199,7 +199,8 @@ def login_page():
         username = st.text_input("Username", key="login_username")
         password = st.text_input("Password", type="password", key="login_password")
         if st.button("Login"):
-            if username and password:                # Firebase authentication
+            if username and password:         
+                # Firebase authentication
                 user_role = check_user_credentials(db, username, password)
                 if user_role:
                     st.session_state.authenticated = True
@@ -207,19 +208,7 @@ def login_page():
                     st.session_state.user_role = user_role
                     # Instead of experimental_rerun, use success message and JavaScript to reload
                     st.success("Login successful! Redirecting to dashboard...")
-                    st.markdown(
-                        """
-                        <script>
-                        // Add a small delay before reloading to show the success message
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 1000);
-                        </script>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                    # Return early to avoid showing login form again
-                    return
+                    st.rerun()
                 else:
                     st.error("Invalid username or password")
             else:
