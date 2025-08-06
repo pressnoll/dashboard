@@ -201,12 +201,25 @@ def login_page():
         if st.button("Login"):
             if username and password:
                 # Firebase authentication
-                user_role = check_user_credentials(db, username, password)
-                if user_role:
+                user_role = check_user_credentials(db, username, password)                if user_role:
                     st.session_state.authenticated = True
                     st.session_state.username = username
                     st.session_state.user_role = user_role
-                    st.experimental_rerun()
+                    # Instead of experimental_rerun, use success message and JavaScript to reload
+                    st.success("Login successful! Redirecting to dashboard...")
+                    st.markdown(
+                        """
+                        <script>
+                        // Add a small delay before reloading to show the success message
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                        </script>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                    # Return early to avoid showing login form again
+                    return
                 else:
                     st.error("Invalid username or password")
             else:
@@ -240,7 +253,18 @@ def logout():
     st.session_state.authenticated = False
     st.session_state.username = ""
     st.session_state.user_role = ""
-    st.experimental_rerun()
+    # Instead of experimental_rerun, use JavaScript to reload
+    st.markdown(
+        """
+        <script>
+        // Add a small delay before reloading
+        setTimeout(function() {
+            window.location.reload();
+        }, 500);
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
 
 def display_dashboard():
     st.title("Staff Attendance Dashboard")
@@ -286,8 +310,7 @@ def display_dashboard():
             except Exception:
                 continue    # If viewing 'Today', show modern staff attendance table
     if period == "Today":
-        st.markdown("### Staff Attendance Today")
-        st.markdown("Real-time attendance tracking for all staff members")
+        st.markdown("### Today's Attendance Record")
         
         # Add search and filter controls in a row
         col1, col2, col3 = st.columns([3, 1, 1])
@@ -560,8 +583,7 @@ def staff_management():
                         st.error(f"Error adding staff: {str(e)}")
                 else:
                     st.error("Name is required")
-    
-    with tab3:
+      with tab3:
         st.subheader("Remove Staff")
         staff_list = get_staff_list(db)
         if staff_list:
@@ -577,7 +599,17 @@ def staff_management():
                         doc_id = results[0].id
                         staff_ref.document(doc_id).delete()
                         st.success(f"Removed staff member: {selected_staff}")
-                        st.experimental_rerun()
+                        # Use JavaScript to reload the page instead of experimental_rerun
+                        st.markdown(
+                            """
+                            <script>
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1000);
+                            </script>
+                            """,
+                            unsafe_allow_html=True
+                        )
                     else:
                         st.error("Staff member not found")
                 except Exception as e:
