@@ -15,14 +15,25 @@ def initialize_firebase():
             if os.path.exists(service_account_path):
                 cred = credentials.Certificate(service_account_path)
                 firebase_admin.initialize_app(cred)
-            else:
-                # For Streamlit Cloud or when file doesn't exist
+            else:                # For Streamlit Cloud or when file doesn't exist
                 # Try to use environment variables or secrets
                 if 'FIREBASE_SERVICE_ACCOUNT' in st.secrets:
                     import json
-                    service_account_info = json.loads(st.secrets["FIREBASE_SERVICE_ACCOUNT"])
-                    cred = credentials.Certificate(service_account_info)
-                    firebase_admin.initialize_app(cred)
+                    try:
+                        # Try to parse as JSON
+                        service_account_info = json.loads(st.secrets["FIREBASE_SERVICE_ACCOUNT"])
+                        
+                        # Special handling for private_key to fix PEM format issues
+                        if 'private_key' in service_account_info:
+                            # Replace escaped newlines with actual newlines
+                            service_account_info['private_key'] = service_account_info['private_key'].replace('\\n', '\n')
+                        
+                        cred = credentials.Certificate(service_account_info)
+                        firebase_admin.initialize_app(cred)
+                    except json.JSONDecodeError:
+                        # If not valid JSON, try to handle it as a string with manual newline replacement
+                        st.error("Failed to parse Firebase credentials as JSON. Please check format.")
+                        return MockFirestore()
                 else:
                     st.error("Firebase credentials not found. Please check setup.")
                     # For development, create a mock database
